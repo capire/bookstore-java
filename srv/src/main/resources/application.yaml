@@ -1,0 +1,69 @@
+spring:
+  config.activate.on-profile: cloud
+cds:
+  odataV4.endpoint.path: /
+  messaging.services:
+    samples-messaging:
+      kind: enterprise-messaging
+  remote.services:
+    OrdersService:
+      name: sap.capire.orders.api.OrdersService
+      type: "odata-v4"
+      http:
+        suffix: "/odata/v4"
+      destination:
+        name: "orders-dest"
+    ReviewsService:
+      name: sap.capire.reviews.api.ReviewsService
+      type: "odata-v4"
+      destination:
+        name: "reviews-dest"
+---
+spring:
+  config.activate.on-profile: default
+  sql.init.platform: h2
+cds:
+  data-source.auto-config.enabled: false
+  security.mock.users:
+    alice:
+      roles: [ "admin" ]
+    bob:
+      roles: [ "user" ]
+  odataV4.endpoint.path: /
+  messaging.services:
+    samples-messaging:
+      kind: "file-based-messaging"
+      binding: "${user.dir}/../../cap.samples.java.messages.txt"
+  remote.services:
+    OrdersService:
+      name: sap.capire.orders.api.OrdersService
+      type: "odata-v4"
+      http:
+        suffix: "/odata/v4"
+      destination:
+        properties:
+          url: "http://localhost:8081"
+          username: "authenticated"
+          password: ""
+    ReviewsService:
+      name: sap.capire.reviews.api.ReviewsService
+      type: "odata-v4"
+      destination:
+        properties:
+          url: http://localhost:8082
+          username: "authenticated"
+          password: ""
+server:
+  port: 8080
+---
+spring:
+  config.activate.on-profile: hybrid
+cds.security.authentication.authConfig.enabled: false
+cds:
+  messaging.services:
+    samples-messaging:
+      kind: enterprise-messaging
+  security:
+    mock:
+      enabled: true
+  indexPage.enabled: true
