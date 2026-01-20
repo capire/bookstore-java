@@ -21,8 +21,8 @@ import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.On;
 
-import cds.gen.sap.capire.bookshop.Books;
-import cds.gen.sap.capire.bookshop.Books_;
+import cds.gen.catalogservice.Books;
+import cds.gen.catalogservice.Books_;
 import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.Currencies;
 import cds.gen.catalogservice.ListOfBooks;
@@ -30,6 +30,7 @@ import cds.gen.catalogservice.SubmitOrderContext;
 import cds.gen.sap.capire.orders.api.ordersservice.OrderChanged_;
 import cds.gen.sap.capire.orders.api.ordersservice.Orders;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersNoDraft_;
+import cds.gen.sap.capire.orders.api.ordersservice.OrdersService;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersService_;
 import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChanged_;
 
@@ -56,10 +57,11 @@ public class CatalogHandler implements EventHandler {
   private MessagingService messagingService;
 
   @Autowired
-  @Qualifier(OrdersService_.CDS_NAME)
-  CqnService ordersService;
+  OrdersService ordersService;
 
-  CqnService ordersServiceOutboxed;
+  @Autowired
+  @Qualifier(OutboxService.PERSISTENT_ORDERED_NAME)
+  OutboxService outboxService;
 
   private final PersistenceService persistenceService;
 
@@ -67,49 +69,46 @@ public class CatalogHandler implements EventHandler {
     this.persistenceService = persistenceService;
   }
 
-  @Autowired
-  public void setRuntime(CdsRuntime runtime) {
-    ordersServiceOutboxed = runtime.getServiceCatalog()
-      .getService(OutboxService.class, OutboxService.PERSISTENT_ORDERED_NAME)
-      .outboxed(ordersService);
-  }
-
   @After(event = CqnService.EVENT_READ)
-  public void AfterReadListOfBooks(Stream<ListOfBooks> books) {
+  public void afterReadListOfBooks(Stream<ListOfBooks> books) {
     books.forEach(book -> {
-      if(book.getStock()>111)
-        book.setTitle(book.getTitle()+" -- 11% discount!");
+      if (book.getStock() > 111)
+        book.setTitle(book.getTitle() + " -- 11% discount!");
     });
   }
 
-  @On(event = SubmitOrderContext.CDS_NAME)
+  @On
   public void submitOrder(SubmitOrderContext context) {
     Integer quantity = context.getQuantity();
-    if(quantity<=0)
+    if (quantity <= 0)
       throw new ServiceException(ErrorStatuses.BAD_REQUEST, "quantity has to be 1 or more").messageTarget("submitOrder");
-    updateBookQuantity(context.getBook(), context.getQuantity());
+    updateBookQuantity(context.getBook(), quantity);
     context.setCompleted();
   }
 
-  @After(event = SubmitOrderContext.CDS_NAME)
+  @After
   public void submitOrderAfter(SubmitOrderContext context) {
-    CqnSelect selectBook = Select.from(Books_.class)
+    var selectBook = Select.from(Books_.class)
       .columns(c -> c.title(),
-              c -> c.price(),
-            c -> c.currency().code())
-      .where(b -> b.get("ID").eq(context.getBook().toString()));
-    Row bookDetails = persistenceService.run(selectBook).single();
-    var items = List.of(Map.of(Orders.Items.PRODUCT_ID, context.getBook().toString(),
-      Orders.Items.QUANTITY,  context.getQuantity(),
-      Orders.Items.TITLE,  bookDetails.get(Books.TITLE),
-      Orders.Items.PRICE,  bookDetails.get(Books.PRICE)
-    ));
+               c -> c.price(),
+               c -> c.currency().code())
+      .where(b -> b.ID().eq(context.getBook()));
+    var bookDetails = persistenceService.run(selectBook).single();
+    Orders.Items item = Orders.Items.create();
+    item.setProductId(context.getBook().toString());
+    item.setTitle(bookDetails.getTitle());
+    item.setPrice(bookDetails.getPrice().doubleValue());
+    item.setQuantity(context.getQuantity());
+
+    Orders order = Orders.create();
     String now = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new java.util.Date());
-    var order = Map.of(Orders.ORDER_NO, "Order at "+now,
-      Orders.BUYER, context.getUserInfo().getName(),
-      Orders.CURRENCY_CODE, bookDetails.get(Currencies.CODE),
-      Orders.ITEMS, items);
-    ordersServiceOutboxed.run(Insert.into(OrdersNoDraft_.CDS_NAME).entry(order));
+    order.setOrderNo("Order at " + now);
+    order.setBuyer(context.getUserInfo().getName());
+    order.setCurrencyCode(bookDetails.getCurrencyCode());
+    order.setItems(List.of(item));
+
+    OrdersService outboxed = outboxService.outboxed(ordersService);
+    outboxed.run(Insert.into(OrdersNoDraft_.CDS_NAME).entry(order));
   }
 
   @On(service = "samples-messaging", event = OrderChanged_.CDS_NAME)
@@ -153,10 +152,10 @@ public class CatalogHandler implements EventHandler {
       .where(b -> b.get(Books.ID).eq(bookId)
       .and(b.get(Books.STOCK).ge(quantity)));
     Result updateResult = persistenceService.run(update);
-    if(updateResult.rowCount()==0) {
-      CqnSelect select = Select.from(cds.gen.sap.capire.bookshop.Books_.CDS_NAME).byId(bookId); 
+    if (updateResult.rowCount() == 0) {
+      CqnSelect select = Select.from(Books_.CDS_NAME).byId(bookId); 
       Result selectResult = persistenceService.run(select);
-      if(selectResult.rowCount()==0)
+      if (selectResult.rowCount() == 0)
         throw new ServiceException(ErrorStatuses.CONFLICT, "Book not found");
       throw new ServiceException(ErrorStatuses.CONFLICT, "Quantity exceeds stock");
     }

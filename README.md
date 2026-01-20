@@ -29,6 +29,16 @@ npm install
 mvn spring-boot:run
 ```
 
+### Together with Orders and Reviews
+
+To connect the different apps together locally, start `bookstore` with the `with-orders` and `with-reviews` spring profiles:
+
+```sh
+SPRING_PROFILES_ACTIVE=default,with-orders,with-reviews mvn cds:watch
+```
+
+Start the [orders](https://github.com/capire/orders-java) and [reviews](https://github.com/capire/reviews-java) apps with `mvn cds:watch`.
+
 
 ## License
 
