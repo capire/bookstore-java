@@ -33,6 +33,10 @@ cds:
       - ../db/data/**
       - ../bookshop/db/data/**
       - ../../bookshop/db/data/**
+      - ../orders/db/data/**
+      - ../../orders/db/data/**
+      - ../reviews/db/data/**
+      - ../../reviews/db/data/**
       - ../node_modules/@capire/common/data/**
       - ../../node_modules/@capire/common/data/**
   security.mock.users:
