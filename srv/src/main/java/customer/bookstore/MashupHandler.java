@@ -25,27 +25,23 @@ import cds.gen.sap.capire.orders.api.ordersservice.Orders;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersNoDraft_;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersService;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersService_;
-import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChanged_;
+import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChanged;
+import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChangedContext;
+import cds.gen.sap.capire.reviews.api.reviewsservice.ReviewsService_;
 
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-// messages
-import com.sap.cds.services.messaging.MessagingService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.text.SimpleDateFormat;
-import com.sap.cds.services.messaging.TopicMessageEventContext;
 import com.sap.cds.services.outbox.OutboxService;
 
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
 public class MashupHandler implements EventHandler {
-
-  @Autowired
-  @Qualifier("samples-messaging")
-  private MessagingService messagingService;
 
   @Autowired
   OrdersService ordersService;
@@ -100,13 +96,13 @@ public class MashupHandler implements EventHandler {
     }
   }
 
-  @On(service = "samples-messaging", event = AverageRatingsChanged_.CDS_NAME)
-  public void receiveReviewedMessage(TopicMessageEventContext context) {
+  @On(service = ReviewsService_.CDS_NAME)
+  private void onAverageRatingChanged(AverageRatingsChangedContext context) {
     try {
-      Map<String, Object> payload = context.getDataMap();
-      String subject = (String) payload.get("subject");
-      Integer count = (Integer) payload.get("count");
-      Integer rating = (Integer) payload.get("rating");
+      AverageRatingsChanged averageRatingChanged = context.getData();
+      String subject = averageRatingChanged.getSubject();
+      Integer count = averageRatingChanged.getReviews();
+      Integer rating = averageRatingChanged.getRating();
 
       Map<String, Object> data = new HashMap<>();
       data.put(Books.RATING, rating);
@@ -118,9 +114,9 @@ public class MashupHandler implements EventHandler {
 
       Result updateResult = persistenceService.run(update);
       if(updateResult.rowCount()!=1)
-        throw new ServiceException(ErrorStatuses.SERVER_ERROR, "Failed to update the book rating");
+        throw new ServiceException(ErrorStatuses.SERVER_ERROR, "Failed to update the book rating, rowCount: "+updateResult.rowCount());
     } catch(Exception e) {
-      System.out.println("receiveReviewedMessage exception: "+e);
+      System.out.println("onAverageRatingChanged exception: "+e);
     }
   }
 
