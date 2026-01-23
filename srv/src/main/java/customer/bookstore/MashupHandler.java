@@ -19,10 +19,12 @@ import cds.gen.catalogservice.Books;
 import cds.gen.catalogservice.Books_;
 import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.SubmitOrderContext;
-import cds.gen.sap.capire.orders.api.ordersservice.OrderChanged_;
+import cds.gen.sap.capire.orders.api.ordersservice.OrderChanged;
+import cds.gen.sap.capire.orders.api.ordersservice.OrderChangedContext;
 import cds.gen.sap.capire.orders.api.ordersservice.Orders;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersNoDraft_;
 import cds.gen.sap.capire.orders.api.ordersservice.OrdersService;
+import cds.gen.sap.capire.orders.api.ordersservice.OrdersService_;
 import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChanged_;
 
 import java.util.List;
@@ -86,14 +88,15 @@ public class MashupHandler implements EventHandler {
     outboxed.run(Insert.into(OrdersNoDraft_.CDS_NAME).entry(order));
   }
 
-  @On(service = "samples-messaging", event = OrderChanged_.CDS_NAME)
-  public void receiveOrderChanged(TopicMessageEventContext context) {
+  @On(service = OrdersService_.CDS_NAME)
+  private void onOrderChanged(OrderChangedContext context) {
     try {
-      Map<String, Object> payload = context.getDataMap();
-      Integer productId = Integer.parseInt((String)payload.get("product")); 
-      catalogHandler.updateBookQuantity(productId, (Integer) payload.get("deltaQuantity"));
+      OrderChanged orderChaged = context.getData();
+      Integer productId = Integer.parseInt(orderChaged.getProduct());
+      Integer deltaQuantity = orderChaged.getDeltaQuantity();
+      catalogHandler.updateBookQuantity(productId, deltaQuantity);
     } catch(Exception e) {
-      System.out.println("receiveOrderChanged exception: "+e);
+      System.out.println("onOrderChanged exception: "+e);
     }
   }
 
