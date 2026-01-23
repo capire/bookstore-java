@@ -1,7 +1,9 @@
+cds:
+  odataV4.endpoint.path: /
+---
 spring:
   config.activate.on-profile: cloud
 cds:
-  odataV4.endpoint.path: /
   messaging.services:
     samples-messaging:
       kind: enterprise-messaging
@@ -23,17 +25,31 @@ spring:
   config.activate.on-profile: default
   sql.init.platform: h2
 cds:
-  data-source.auto-config.enabled: false
+  data-source:
+    auto-config.enabled: false
+    csv:
+      paths:
+      - db/data/**
+      - ../db/data/**
+      - ../bookshop/db/data/**
+      - ../../bookshop/db/data/**
+      - ../node_modules/@capire/common/data/**
+      - ../../node_modules/@capire/common/data/**
   security.mock.users:
     alice:
       roles: [ "admin" ]
     bob:
       roles: [ "user" ]
-  odataV4.endpoint.path: /
   messaging.services:
     samples-messaging:
       kind: "file-based-messaging"
       binding: "${user.dir}/../../cap.samples.java.messages.txt"
+server:
+  port: 8080
+---
+spring:
+  config.activate.on-profile: with-orders
+cds:
   remote.services:
     OrdersService:
       name: sap.capire.orders.api.OrdersService
@@ -45,6 +61,11 @@ cds:
           url: "http://localhost:8081"
           username: "authenticated"
           password: ""
+---
+spring:
+  config.activate.on-profile: with-reviews
+cds:
+  remote.services:
     ReviewsService:
       name: sap.capire.reviews.api.ReviewsService
       type: "odata-v4"
@@ -53,17 +74,21 @@ cds:
           url: http://localhost:8082
           username: "authenticated"
           password: ""
-server:
-  port: 8080
 ---
 spring:
   config.activate.on-profile: hybrid
-cds.security.authentication.authConfig.enabled: false
 cds:
   messaging.services:
     samples-messaging:
       kind: enterprise-messaging
   security:
+    xsuaa:
+      enabled: false
     mock:
       enabled: true
+      users:
+        alice:
+          roles: [ "admin" ]
+        bob:
+          roles: [ "user" ]
   indexPage.enabled: true
