@@ -64,7 +64,7 @@ public class MashupHandler implements EventHandler {
     var selectBook = Select.from(Books_.class)
       .columns(c -> c.title(),
                c -> c.price(),
-               c -> c.currency().code())
+               c -> c.currency_code())
       .where(b -> b.ID().eq(context.getBook()));
     var bookDetails = persistenceService.run(selectBook).single();
     Orders.Items item = Orders.Items.create();
