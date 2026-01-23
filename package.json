@@ -18,6 +18,7 @@
   },
   "scripts": {
     "start": "mvn spring-boot:run",
+    "start-with-all": "SPRING_PROFILES_ACTIVE=default,with-orders,with-reviews mvn spring-boot:run",
     "hybrid": "SPRING_PROFILES_ACTIVE=cloud,hybrid npx cds bind --exec mvn spring-boot:run",
     "bind": "npx cds bind --to samples-auth,samples-db,samples-destination,samples-messaging"
   },
