@@ -138,8 +138,8 @@
 						</goals>
 						<configuration>
 							<commands>
-								<command>build --for java</command>
-								<command>deploy --to h2 --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
+								<command>${buildCommand1}</command>
+								<command>${buildCommand2}</command>
 							</commands>
 						</configuration>
 					</execution>
@@ -162,4 +162,23 @@
 		</plugins>
 	</build>
 
+	<profiles>
+			<profile>
+					<id>development</id>
+					<activation>
+						<activeByDefault>true</activeByDefault>
+					</activation>
+					<properties>
+							<buildCommand1>build --for java</buildCommand1>
+							<buildCommand2>deploy --to h2 --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</buildCommand2>
+					</properties>
+			</profile>
+			<profile>
+					<id>production</id>
+					<properties>
+							<buildCommand1>build --for java --production</buildCommand1>
+							<buildCommand2>eval "true"</buildCommand2>
+					</properties>
+			</profile>
+	</profiles>
 </project>
