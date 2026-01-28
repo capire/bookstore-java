@@ -6,5 +6,5 @@ using { AdminService } from '@capire/bookshop-java';
 
 extend projection AdminService.Authors with {
   DATEDIFF('DAY', dateOfBirth, dateOfDeath) / 356 as age: Integer,
-  SUBSTRING(dateOfBirth,1,4) || ' – ' || SUBSTRING(dateOfDeath,1,4) as lifetime : String
+  SUBSTRING(dateOfBirth,0,4) || ' – ' || SUBSTRING(dateOfDeath,0,4) as lifetime : String
 }
