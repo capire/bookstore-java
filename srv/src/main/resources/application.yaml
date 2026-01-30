@@ -9,7 +9,7 @@ cds:
       kind: enterprise-messaging
   remote.services:
     OrdersService:
-      name: sap.capire.orders.api.OrdersService
+      name: OrdersService
       type: "odata-v4"
       http:
         suffix: "/odata/v4"
@@ -56,7 +56,7 @@ spring:
 cds:
   remote.services:
     OrdersService:
-      name: sap.capire.orders.api.OrdersService
+      name: OrdersService
       type: "odata-v4"
       http:
         suffix: "/odata/v4"
