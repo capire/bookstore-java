@@ -16,7 +16,7 @@ cds:
       destination:
         name: "orders-dest"
     ReviewsService:
-      name: sap.capire.reviews.api.ReviewsService
+      name: ReviewsService
       type: "odata-v4"
       destination:
         name: "reviews-dest"
@@ -71,7 +71,7 @@ spring:
 cds:
   remote.services:
     ReviewsService:
-      name: sap.capire.reviews.api.ReviewsService
+      name: ReviewsService
       type: "odata-v4"
       destination:
         properties:

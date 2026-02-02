@@ -25,9 +25,9 @@ import cds.gen.ordersservice.Orders;
 import cds.gen.ordersservice.OrdersNoDraft_;
 import cds.gen.ordersservice.OrdersService;
 import cds.gen.ordersservice.OrdersService_;
-import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChanged;
-import cds.gen.sap.capire.reviews.api.reviewsservice.AverageRatingsChangedContext;
-import cds.gen.sap.capire.reviews.api.reviewsservice.ReviewsService_;
+import cds.gen.reviewsservice.AverageRatingsChanged;
+import cds.gen.reviewsservice.AverageRatingsChangedContext;
+import cds.gen.reviewsservice.ReviewsService_;
 
 import java.util.List;
 import java.util.Map;

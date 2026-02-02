@@ -8,11 +8,11 @@
 //
 //  Extend Books with access to Reviews and average ratings
 //
-using { sap.capire.reviews.api.ReviewsService as reviews } from '@capire/reviews-java';
+using { ReviewsService.AverageRatings } from '@capire/reviews-java';
 using { sap.capire.bookshop.Books } from '@capire/bookshop-java';
 using { sap.capire.reviews.Reviews } from '@capire/reviews-java';
 extend Books with {
-  rating  : type of reviews.AverageRatings:rating; // average rating
+  rating  : type of AverageRatings:rating; // average rating
   reviews : Integer @title : '{i18n>NumberOfReviews}';
 }
 

@@ -4,17 +4,15 @@
   "description": "Shows how to reuse and compose with CAP.",
   "repository": "https://github.com/capire/bookstore-java",
   "dependencies": {
-    "@cap-js/hana": ">=1",
     "@capire/bookshop-java": "*",
     "@capire/common": "*",
     "@capire/data-viewer": "*",
     "@capire/orders-java": "*",
-    "@capire/reviews-java": "*",
-    "@sap/cds": ">=5",
-    "@sap/cds-dk": "^9.3.2"
+    "@capire/reviews-java": "*"
   },
   "devDependencies": {
-    "@cap-js/sqlite": ">=1"
+    "@sap/cds": "^9",
+    "@sap/cds-dk": "^9"
   },
   "scripts": {
     "start": "mvn spring-boot:run",
