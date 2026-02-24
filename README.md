@@ -1,5 +1,7 @@
 # @capire/bookstore-java
 
+[![REUSE status](https://api.reuse.software/badge/github.com/capire/bookstore-java)](https://api.reuse.software/info/github.com/capire/bookstore-java)
+
 A composite app of
 
 - [bookshop-java](https://github.com/capire/bookshop-java) – a simple [primer app](https://cap.cloud.sap/docs/get-started/in-a-nutshell?impl-variant=java)
@@ -42,4 +44,4 @@ Start the [orders](https://github.com/capire/orders-java) and [reviews](https://
 
 ## License
 
-Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved. This file is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
+Copyright 2026 SAP SE or an SAP affiliate company and capire/bookstore-java contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/capire/bookstore-java).

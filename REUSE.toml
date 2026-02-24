@@ -1,0 +1,11 @@
+version = 1
+SPDX-PackageName = "capire-bookstore-java"
+SPDX-PackageSupplier = "The cap team <cap@sap.com>"
+SPDX-PackageDownloadLocation = "https://github.com/capire/bookstore-java"
+SPDX-PackageComment = "This project includes a sample bookstore application that integrates with other SAP CAP-based microservices."
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 SAP SE or an SAP affiliate company and cds-dbs contributors"
+SPDX-License-Identifier = "Apache-2.0"
