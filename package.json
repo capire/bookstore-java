@@ -1,14 +1,14 @@
 {
-  "name": "@capire/bookstore-java",
+  "name": "@capire/bookstore",
   "version": "2.0.1",
   "description": "Shows how to reuse and compose with CAP.",
   "repository": "https://github.com/capire/bookstore-java",
   "dependencies": {
-    "@capire/bookshop-java": "*",
+    "@capire/bookshop": "*",
     "@capire/common": "*",
     "@capire/data-viewer": "*",
-    "@capire/orders-java": "*",
-    "@capire/reviews-java": "*"
+    "@capire/orders": "*",
+    "@capire/reviews": "*"
   },
   "devDependencies": {
     "@sap/cds": "^9",

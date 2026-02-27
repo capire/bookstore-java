@@ -1,4 +1,4 @@
-using CatalogService from '@capire/bookshop-java';
+using CatalogService from '@capire/bookshop';
 
 ////////////////////////////////////////////////////////////////////////////
 //

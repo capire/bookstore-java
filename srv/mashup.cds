@@ -8,9 +8,9 @@
 //
 //  Extend Books with access to Reviews and average ratings
 //
-using { ReviewsService.AverageRatings } from '@capire/reviews-java';
-using { sap.capire.bookshop.Books } from '@capire/bookshop-java';
-using { sap.capire.reviews.Reviews } from '@capire/reviews-java';
+using { ReviewsService.AverageRatings } from '@capire/reviews';
+using { sap.capire.bookshop.Books } from '@capire/bookshop';
+using { sap.capire.reviews.Reviews } from '@capire/reviews';
 extend Books with {
   rating  : type of AverageRatings:rating; // average rating
   reviews : Integer @title : '{i18n>NumberOfReviews}';
@@ -19,13 +19,13 @@ extend Books with {
 //
 //  Extend Orders with Books as Products
 //
-using { sap.capire.orders.Orders } from '@capire/orders-java';
+using { sap.capire.orders.Orders } from '@capire/orders';
 extend Orders:Items with {
   book : Association to Books on product.ID = book.ID
 }
 
 // Ensure models from all imported packages are loaded
-using from '@capire/bookstore-java/app/services';
-using from '@capire/orders-java/app/fiori';
+using from '@capire/bookstore/app/services';
+using from '@capire/orders/app/fiori';
 using from '@capire/data-viewer';
 using from '@capire/common';
