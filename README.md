@@ -1,12 +1,12 @@
-# @capire/bookstore-java
+# @capire/bookstore
 
 [![REUSE status](https://api.reuse.software/badge/github.com/capire/bookstore-java)](https://api.reuse.software/info/github.com/capire/bookstore-java)
 
 A composite app of
 
-- [bookshop-java](https://github.com/capire/bookshop-java) – a simple [primer app](https://cap.cloud.sap/docs/get-started/in-a-nutshell?impl-variant=java)
-- [reviews-java](https://github.com/capire/reviews-java) - a generic reuse service
-- [orders-java](https://github.com/capire/orders-java) - a generic reuse service
+- [bookshop](https://github.com/capire/bookshop-java) – a simple [primer app](https://cap.cloud.sap/docs/get-started/in-a-nutshell?impl-variant=java)
+- [reviews](https://github.com/capire/reviews-java) - a generic reuse service
+- [orders](https://github.com/capire/orders-java) - a generic reuse service
 - [common](https://github.com/capire/common) - a reuse content package
 - [SAP Fiori Elements UIs](app)
 
