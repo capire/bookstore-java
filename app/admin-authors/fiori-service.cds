@@ -1,4 +1,4 @@
-using {AdminService} from '@capire/bookshop-java';
+using {AdminService} from '@capire/bookshop';
 
 annotate AdminService.Authors with @odata.draft.enabled;
 
