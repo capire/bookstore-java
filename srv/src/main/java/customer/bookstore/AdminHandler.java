@@ -46,6 +46,6 @@ public class AdminHandler implements EventHandler {
       case DraftNewEventContext newCtx -> newCtx.getCqn().entries();
       default -> List.of();
     };
-    entries.forEach(m -> m.put("ID", id + 4)); // Note: that is not safe! ok for this sample only.
+    entries.forEach(m -> m.put("ID", id != null ? id + 4 : 0 )); // Note: that is not safe! ok for this sample only.
   }
 }
