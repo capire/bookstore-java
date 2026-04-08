@@ -54,14 +54,12 @@
 			<groupId>com.sap.cds</groupId>
 			<artifactId>cds-feature-enterprise-messaging</artifactId>
 			<scope>runtime</scope>
-			<version>4.5.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.sap.cds</groupId>
 			<artifactId>cds-feature-remote-odata</artifactId>
 			<scope>runtime</scope>
-			<version>4.5.0</version>
 		</dependency>
 
 		<dependency>
